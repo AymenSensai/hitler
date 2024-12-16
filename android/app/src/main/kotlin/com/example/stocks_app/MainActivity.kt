@@ -1,4 +1,4 @@
-package com.example.stocks_app
+package com.app.hitler
 
 import io.flutter.embedding.android.FlutterActivity
 
