@@ -10,6 +10,13 @@ abstract class ThemeManager {
       primaryColor: ColorsManager.blue,
       fontFamily: 'Inter',
       useMaterial3: true,
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          overlayColor: WidgetStateProperty.all(
+            ColorsManager.blue.withValues(alpha: 0.1),
+          ),
+        ),
+      ),
       textSelectionTheme: const TextSelectionThemeData(
         cursorColor: ColorsManager.blue,
         selectionColor: ColorsManager.blue,

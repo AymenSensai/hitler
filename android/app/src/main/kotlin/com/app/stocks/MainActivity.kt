@@ -1,4 +1,4 @@
-package com.app.hitler
+package com.app.stocks
 
 import io.flutter.embedding.android.FlutterActivity
 

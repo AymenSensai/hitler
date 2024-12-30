@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/routing/app_router.dart';
 import 'core/routing/routes.dart';
 import 'core/theming/theme.dart';
+import 'core/utils/constants.dart';
 
 class StocksApp extends StatelessWidget {
   final AppRouter appRouter;
@@ -18,7 +19,11 @@ class StocksApp extends StatelessWidget {
         title: 'Stocks',
         debugShowCheckedModeBanner: false,
         onGenerateRoute: appRouter.generateRoute,
-        initialRoute: Routes.appHome,
+        initialRoute: isLoggedInUser
+            ? Routes.appHome
+            : isOnboardingCompletedOnboarding
+                ? Routes.signIn
+                : Routes.onboarding,
         theme: ThemeManager.getAppLightTheme(),
       ),
     );

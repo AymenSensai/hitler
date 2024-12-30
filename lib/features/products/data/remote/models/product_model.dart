@@ -17,6 +17,7 @@ class ProductModel {
   final String sellingPrice;
   @JsonKey(name: 'cost_price')
   final String costPrice;
+  final String image;
 
   ProductModel({
     this.id,
@@ -27,6 +28,7 @@ class ProductModel {
     required this.category,
     required this.sellingPrice,
     required this.costPrice,
+    required this.image,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
@@ -43,6 +45,7 @@ class ProductModel {
         category: category,
         sellingPrice: sellingPrice,
         costPrice: costPrice,
+        image: image,
       );
 
   static ProductModel fromEntity(ProductEntity product) => ProductModel(
@@ -54,5 +57,6 @@ class ProductModel {
         category: product.category,
         sellingPrice: product.sellingPrice,
         costPrice: product.costPrice,
+        image: product.image,
       );
 }
