@@ -25,6 +25,8 @@ class AppTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final VoidCallback? onTap;
   final int maxLines;
+  final Iterable<String>? autofillHints;
+  final Function(String)? onChanged;
   const AppTextField({
     super.key,
     this.contentPadding,
@@ -42,6 +44,8 @@ class AppTextField extends StatelessWidget {
     this.onFieldSubmitted,
     this.textInputAction,
     this.onTap,
+    this.autofillHints,
+    this.onChanged,
     this.maxLines = 1,
     required this.validator,
     required this.controller,
@@ -54,6 +58,8 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       textInputAction: textInputAction,
+      autofillHints: autofillHints,
+      onChanged: onChanged,
       decoration: InputDecoration(
         isDense: true,
         errorStyle: TextStyles.font10RedRegular,

@@ -39,13 +39,13 @@ class AppTextButton extends StatelessWidget {
           backgroundColor ?? ColorsManager.blue,
         ),
         fixedSize: WidgetStateProperty.all(
-          Size(buttonWidth?.w ?? double.maxFinite, buttonHeight ?? 70.h),
+          Size(buttonWidth?.w ?? double.maxFinite, buttonHeight ?? 62.h),
         ),
       ),
       onPressed: onPressed,
       child: Text(
         buttonText,
-        style: textStyle ?? TextStyles.font16BlackSemiBold,
+        style: textStyle ?? TextStyles.font16WhiteSemiBold,
       ),
     );
   }

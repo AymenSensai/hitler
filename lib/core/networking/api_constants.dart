@@ -4,7 +4,13 @@ class ApiConstants {
 
   // Auth end points.
   static const String login = "login";
+  static const String register = "register";
+  static const String googleSignIn = "google-sign-in";
+  static const String forgotPassword = "forgot-password";
+  static const String resetPassword = "reset-password";
+
   static const String products = "products";
+  static const String categories = "categories";
 }
 
 class ApiErrors {

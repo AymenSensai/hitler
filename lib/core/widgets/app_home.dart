@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:stocks_app/core/routing/app_router.dart';
+import 'package:stocks_app/core/routing/routes.dart';
+import 'package:stocks_app/core/utils/extensions.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/products/presentation/screens/products_screen.dart';
 import '../theming/colors.dart';
@@ -39,7 +41,9 @@ class _AppHomeState extends State<AppHome> {
         return const HomeScreen();
       case 1:
         return BlocProvider.value(
-          value: AppRouter.productsCubit..getProducts(),
+          value: AppRouter.productsCubit
+            ..getProducts()
+            ..getCategories(),
           child: const ProductsScreen(),
         );
       case 2:
@@ -83,7 +87,7 @@ class _AppHomeState extends State<AppHome> {
     return Scaffold(
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => context.pushNamed(Routes.updateStock),
         child: Icon(
           Icons.shuffle,
           color: ColorsManager.white,

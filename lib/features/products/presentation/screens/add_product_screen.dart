@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:stocks_app/core/utils/spacing.dart';
+import 'package:stocks_app/core/widgets/app_text_dropdown_field.dart';
 import 'package:stocks_app/core/widgets/app_text_form_field.dart';
 import 'package:stocks_app/core/widgets/top_app_bar.dart';
 import 'package:stocks_app/features/products/domain/entities/product_entity.dart';
 import 'package:stocks_app/features/products/presentation/controllers/products_cubit.dart';
+import 'package:stocks_app/features/products/presentation/widgets/category_dialog.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key, this.product});
@@ -20,13 +25,16 @@ class AddProductScreen extends StatefulWidget {
 class _AddProductScreenState extends State<AddProductScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _nameController = TextEditingController();
-  final _skuController = TextEditingController();
-  final _stockController = TextEditingController();
-  final _reorderPointController = TextEditingController();
-  final _categoryController = TextEditingController();
-  final _sellingPriceController = TextEditingController();
-  final _costPriceController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _skuController = TextEditingController();
+  final TextEditingController _stockController = TextEditingController();
+  final TextEditingController _reorderPointController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _sellingPriceController = TextEditingController();
+  final TextEditingController _costPriceController = TextEditingController();
+
+  File? _productImage;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -55,8 +63,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
     super.dispose();
   }
 
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _productImage = File(pickedFile.path);
+      });
+    }
+  }
+
   void _saveProduct() {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && _productImage != null) {
       context.read<ProductsCubit>().addProduct(
             ProductEntity(
               name: _nameController.text,
@@ -66,8 +83,29 @@ class _AddProductScreenState extends State<AddProductScreen> {
               category: _categoryController.text,
               sellingPrice: _sellingPriceController.text,
               costPrice: _costPriceController.text,
+              image: _productImage!.path,
             ),
           );
+    }
+  }
+
+  void showCategoryDialog(void Function(String) onAddCategory) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CategoryDialog(
+          onAddCategory: onAddCategory,
+        );
+      },
+    );
+  }
+
+  Future<String?> scanSKU() async {
+    try {
+      var result = await BarcodeScanner.scan();
+      return result.rawContent.isNotEmpty ? result.rawContent : null;
+    } catch (e) {
+      return null;
     }
   }
 
@@ -90,6 +128,32 @@ class _AddProductScreenState extends State<AddProductScreen> {
             key: _formKey,
             child: Column(
               children: [
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Container(
+                    height: 150,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: _productImage != null
+                        ? Image.file(_productImage!, fit: BoxFit.cover)
+                        : Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.image, size: 50, color: Colors.grey),
+                                Text(
+                                  'Tap to upload image',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                  ),
+                ),
+                verticalSpace(16),
                 AppTextField(
                   validator: (value) =>
                       value!.isEmpty ? 'Product Name is required' : null,
@@ -105,7 +169,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   suffixIcon: IconButton(
                     icon: Icon(Icons.qr_code_scanner),
                     onPressed: () async {
-                      // Implement SKU scanning logic here
                       final scannedSKU = await scanSKU();
                       if (scannedSKU != null) {
                         _skuController.text = scannedSKU;
@@ -140,11 +203,23 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   keyboardType: TextInputType.number,
                 ),
                 verticalSpace(16),
-                AppTextField(
+                AppTextDropdownField(
+                  initialValue: null,
+                  dropdownList: context.read<ProductsCubit>().categories,
+                  hintText: 'Category',
                   validator: (value) =>
                       value!.isEmpty ? 'Category is required' : null,
-                  controller: _categoryController,
-                  hintText: 'Category',
+                  onValueChanged: (value) {
+                    _categoryController.text = value!;
+                  },
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () => showCategoryDialog(
+                      (category) {
+                        context.read<ProductsCubit>().addCategory(category);
+                      },
+                    ),
+                  ),
                 ),
                 verticalSpace(16),
                 AppTextField(
@@ -178,15 +253,5 @@ class _AddProductScreenState extends State<AddProductScreen> {
         ),
       ),
     );
-  }
-
-  Future<String?> scanSKU() async {
-    try {
-      var result = await BarcodeScanner.scan();
-      return result.rawContent.isNotEmpty ? result.rawContent : null;
-    } catch (e) {
-      // Handle any exceptions
-      return null;
-    }
   }
 }
