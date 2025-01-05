@@ -55,6 +55,13 @@ dependencies:
   flutter_typeahead: ^5.2.0
   # Flutter plugin for selecting images from the Android and iOS image library, and taking new pictures with the camera.
   image_picker: ^1.1.2
+  # API to request and check permissions.
+  permission_handler: ^11.3.1
+  shimmer: ^3.0.0
+  flutter_cache_manager: ^3.4.1
+  cached_network_image: ^3.4.1
+  fl_chart: ^0.70.0
+  intl: ^0.20.1
 
 dev_dependencies:
   flutter_test:

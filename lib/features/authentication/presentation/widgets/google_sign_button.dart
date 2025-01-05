@@ -36,6 +36,7 @@ class _GoogleSignButtonState extends State<GoogleSignButton> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           padding: EdgeInsets.symmetric(horizontal: 32.w),
           fixedSize: Size(double.maxFinite, 62.h),
+          backgroundColor: ColorsManager.white,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -67,8 +68,6 @@ class _GoogleSignButtonState extends State<GoogleSignButton> {
     // Obtain Google authentication details
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
-
-    print(googleAuth.idToken);
 
     if (!context.mounted || googleAuth.idToken == null) return;
 

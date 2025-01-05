@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stocks_app/core/theming/colors.dart';
 
 void showAnimatedLoading(BuildContext context) {
   showDialog(
@@ -13,7 +14,9 @@ class AnimatedLoading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: CircularProgressIndicator(),
+      child: CircularProgressIndicator(
+        color: ColorsManager.blue,
+      ),
     );
   }
 }

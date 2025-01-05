@@ -41,7 +41,6 @@ class _AppTextDropdownFieldState extends State<AppTextDropdownField> {
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
       value: _selectedValue,
-      style: TextStyles.font14WhiteRegular,
       isDense: false,
       itemHeight: 61.h,
       validator: (value) {
@@ -66,7 +65,7 @@ class _AppTextDropdownFieldState extends State<AppTextDropdownField> {
         ),
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
-            color: ColorsManager.lightGrey,
+            color: ColorsManager.white,
             width: 1,
           ),
           borderRadius: BorderRadius.circular(8.0),
@@ -91,7 +90,7 @@ class _AppTextDropdownFieldState extends State<AppTextDropdownField> {
           value: item,
           child: Text(
             item,
-            style: TextStyles.font18BlackMedium,
+            style: TextStyles.font16BlackMedium,
           ),
         );
       }).toList(),

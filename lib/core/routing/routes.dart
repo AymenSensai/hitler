@@ -9,10 +9,16 @@ class Routes {
 
   static const String appHome = '/app_home';
   static const String updateStock = '/update_stock';
+  static const String updateStockDetails = '/update_stock_details';
   static const String selectProducts = '/select_products';
 
   static const String addProduct = '/add_product';
   static const String product = '/product';
+
+  static const String category = '/category';
+
+  static const String contacts = '/contacts';
+  static const String addContact = '/add-contact';
 
   Routes._();
 }

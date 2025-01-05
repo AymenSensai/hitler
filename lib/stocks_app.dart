@@ -16,7 +16,7 @@ class StocksApp extends StatelessWidget {
       designSize: const Size(375, 812),
       minTextAdapt: true,
       child: MaterialApp(
-        title: 'Stocks',
+        title: 'Stock Manager',
         debugShowCheckedModeBanner: false,
         onGenerateRoute: appRouter.generateRoute,
         initialRoute: isLoggedInUser

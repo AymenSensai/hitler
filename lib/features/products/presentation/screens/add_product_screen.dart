@@ -1,10 +1,13 @@
 import 'dart:io';
 
-import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:stocks_app/core/theming/colors.dart';
+import 'package:stocks_app/core/utils/cached_network_image.dart';
+import 'package:stocks_app/core/utils/error_snackbar.dart';
 import 'package:stocks_app/core/utils/spacing.dart';
 import 'package:stocks_app/core/widgets/app_text_dropdown_field.dart';
 import 'package:stocks_app/core/widgets/app_text_form_field.dart';
@@ -12,6 +15,11 @@ import 'package:stocks_app/core/widgets/top_app_bar.dart';
 import 'package:stocks_app/features/products/domain/entities/product_entity.dart';
 import 'package:stocks_app/features/products/presentation/controllers/products_cubit.dart';
 import 'package:stocks_app/features/products/presentation/widgets/category_dialog.dart';
+
+import '../../../../core/utils/scan_sku.dart';
+import '../../data/remote/models/product_request_body.dart';
+import '../controllers/products_state.dart';
+import '../widgets/products_bloc_listener.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key, this.product});
@@ -43,11 +51,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
       final product = widget.product!;
       _nameController.text = product.name;
       _skuController.text = product.sku;
-      _stockController.text = product.openingStock.toString();
-      _reorderPointController.text = product.reorderPoint.toString();
-      _categoryController.text = product.category;
+      _stockController.text = product.stock.toString();
+      _reorderPointController.text =
+          double.parse(product.reorderPoint).toInt().toString();
       _sellingPriceController.text = product.sellingPrice;
       _costPriceController.text = product.costPrice;
+      _categoryController.text = product.category.name;
     }
   }
 
@@ -72,20 +81,40 @@ class _AddProductScreenState extends State<AddProductScreen> {
     }
   }
 
-  void _saveProduct() {
-    if (_formKey.currentState!.validate() && _productImage != null) {
-      context.read<ProductsCubit>().addProduct(
-            ProductEntity(
-              name: _nameController.text,
-              sku: _skuController.text,
-              openingStock: int.parse(_stockController.text),
-              reorderPoint: int.parse(_reorderPointController.text),
-              category: _categoryController.text,
-              sellingPrice: _sellingPriceController.text,
-              costPrice: _costPriceController.text,
-              image: _productImage!.path,
-            ),
-          );
+  Future<void> _saveProduct() async {
+    if (_formKey.currentState!.validate()) {
+      if (_productImage == null && widget.product == null) {
+        errorSnackbar(context, 'Product image is required');
+      } else {
+        if (widget.product == null) {
+          context.read<ProductsCubit>().addProduct(
+                ProductRequestBody(
+                  name: _nameController.text,
+                  sku: _skuController.text,
+                  stock: int.parse(_stockController.text),
+                  reorderPoint: int.parse(_reorderPointController.text),
+                  category: _categoryController.text,
+                  sellingPrice: _sellingPriceController.text,
+                  costPrice: _costPriceController.text,
+                  image: _productImage!,
+                ),
+              );
+        } else {
+          context.read<ProductsCubit>().updateProduct(
+                ProductRequestBody(
+                  id: widget.product!.id,
+                  name: _nameController.text,
+                  sku: _skuController.text,
+                  stock: int.parse(_stockController.text),
+                  reorderPoint: int.parse(_reorderPointController.text),
+                  category: _categoryController.text,
+                  sellingPrice: _sellingPriceController.text,
+                  costPrice: _costPriceController.text,
+                  image: _productImage!,
+                ),
+              );
+        }
+      }
     }
   }
 
@@ -98,15 +127,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
         );
       },
     );
-  }
-
-  Future<String?> scanSKU() async {
-    try {
-      var result = await BarcodeScanner.scan();
-      return result.rawContent.isNotEmpty ? result.rawContent : null;
-    } catch (e) {
-      return null;
-    }
   }
 
   @override
@@ -136,21 +156,27 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(8),
+                      color: ColorsManager.white,
                     ),
-                    child: _productImage != null
-                        ? Image.file(_productImage!, fit: BoxFit.cover)
-                        : Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.image, size: 50, color: Colors.grey),
-                                Text(
-                                  'Tap to upload image',
-                                  style: TextStyle(color: Colors.grey),
+                    child: widget.product?.image != null
+                        ? CachedNetworkImageWidget(
+                            imageUrl: widget.product!.image!,
+                          )
+                        : _productImage != null
+                            ? Image.file(_productImage!, fit: BoxFit.cover)
+                            : Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.image,
+                                        size: 50, color: Colors.grey),
+                                    Text(
+                                      'Tap to upload image',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
+                              ),
                   ),
                 ),
                 verticalSpace(16),
@@ -177,19 +203,22 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ),
                 ),
                 verticalSpace(16),
-                AppTextField(
-                  validator: (value) {
-                    if (value!.isEmpty) return 'Opening Stock is required';
-                    if (int.tryParse(value) == null) {
-                      return 'Must be a valid number';
-                    }
-                    return null;
-                  },
-                  controller: _stockController,
-                  hintText: 'Opening Stock',
-                  keyboardType: TextInputType.number,
-                ),
-                verticalSpace(16),
+                if (widget.product == null) ...[
+                  AppTextField(
+                    validator: (value) {
+                      if (value!.isEmpty) return 'Opening Stock is required';
+                      if (int.tryParse(value) == null) {
+                        return 'Must be a valid number';
+                      }
+                      return null;
+                    },
+                    controller: _stockController,
+                    hintText: 'Opening Stock',
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  ),
+                  verticalSpace(16),
+                ],
                 AppTextField(
                   validator: (value) {
                     if (value!.isEmpty) return 'Reorder Point is required';
@@ -203,23 +232,29 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   keyboardType: TextInputType.number,
                 ),
                 verticalSpace(16),
-                AppTextDropdownField(
-                  initialValue: null,
-                  dropdownList: context.read<ProductsCubit>().categories,
-                  hintText: 'Category',
-                  validator: (value) =>
-                      value!.isEmpty ? 'Category is required' : null,
-                  onValueChanged: (value) {
-                    _categoryController.text = value!;
-                  },
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () => showCategoryDialog(
-                      (category) {
-                        context.read<ProductsCubit>().addCategory(category);
+                BlocBuilder<ProductsCubit, ProductsState>(
+                  buildWhen: (previous, current) =>
+                      current is GetCategoriesSuccess,
+                  builder: (context, state) {
+                    return AppTextDropdownField(
+                      initialValue: widget.product?.category.name,
+                      dropdownList: context.read<ProductsCubit>().categories,
+                      hintText: 'Category',
+                      validator: (value) =>
+                          value!.isEmpty ? 'Category is required' : null,
+                      onValueChanged: (value) {
+                        _categoryController.text = value!;
                       },
-                    ),
-                  ),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () => showCategoryDialog(
+                          (category) {
+                            context.read<ProductsCubit>().addCategory(category);
+                          },
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 verticalSpace(16),
                 AppTextField(
@@ -233,6 +268,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   controller: _sellingPriceController,
                   hintText: 'Selling Price (DZD)',
                   keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
                 verticalSpace(16),
                 AppTextField(
@@ -246,7 +282,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   controller: _costPriceController,
                   hintText: 'Cost Price (DZD)',
                   keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
+                AddProductBlocListener(),
               ],
             ),
           ),

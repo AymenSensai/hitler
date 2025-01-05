@@ -6,7 +6,7 @@ import 'colors.dart';
 abstract class ThemeManager {
   static ThemeData getAppLightTheme() {
     return ThemeData(
-      scaffoldBackgroundColor: ColorsManager.white,
+      scaffoldBackgroundColor: ColorsManager.background,
       primaryColor: ColorsManager.blue,
       fontFamily: 'Inter',
       useMaterial3: true,
@@ -16,6 +16,9 @@ abstract class ThemeManager {
             ColorsManager.blue.withValues(alpha: 0.1),
           ),
         ),
+      ),
+      radioTheme: RadioThemeData(
+        fillColor: WidgetStateProperty.all(ColorsManager.blue),
       ),
       textSelectionTheme: const TextSelectionThemeData(
         cursorColor: ColorsManager.blue,

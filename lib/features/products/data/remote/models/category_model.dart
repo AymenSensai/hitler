@@ -20,8 +20,15 @@ class CategoryModel {
 
   CategoryEntity toEntity() {
     return CategoryEntity(
-      id: id.toString(),
+      id: id,
       name: name,
+    );
+  }
+
+  static CategoryModel fromEntity(CategoryEntity category) {
+    return CategoryModel(
+      id: category.id,
+      name: category.name,
     );
   }
 }
