@@ -19,6 +19,8 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: leading,
       actions: actions,
       toolbarHeight: 50,
+      centerTitle: false,
+      titleSpacing: 16,
     );
   }
 

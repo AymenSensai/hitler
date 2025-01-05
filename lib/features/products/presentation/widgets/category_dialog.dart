@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:stocks_app/core/theming/colors.dart';
+import 'package:stocks_app/core/theming/styles.dart';
 import 'package:stocks_app/core/utils/extensions.dart';
 import 'package:stocks_app/core/widgets/app_text_button.dart';
 
@@ -33,6 +34,8 @@ class _CategoryDialogState extends State<CategoryDialog> {
         controller: _dialogController,
         hintText: 'Enter category name',
         validator: (_) {},
+        backgroundColor: ColorsManager.lightGrey,
+        hintStyle: TextStyles.font14BlackRegular,
       ),
       actionsAlignment: MainAxisAlignment.center,
       actions: [

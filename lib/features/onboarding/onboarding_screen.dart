@@ -45,7 +45,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     }
   }
 
-  Future<void> _completeOnboarding() async {
+  Future<void> _completeOnboarding(BuildContext context) async {
     await SharedPrefHelper.setData(SharedPrefKeys.onBoardingSeen, true);
     if (!context.mounted) return;
     context.pushReplacementNamed(Routes.signIn);
@@ -87,7 +87,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               children: [
                 if (_pageIndex != 2)
                   TextButton(
-                    onPressed: _completeOnboarding,
+                    onPressed: () => _completeOnboarding(context),
                     child: Text(
                       'Skip',
                       style: TextStyles.font14BlackMedium,
@@ -108,7 +108,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 TextButton(
                   onPressed: () async {
                     if (_pageIndex == 2) {
-                      await _completeOnboarding();
+                      await _completeOnboarding(context);
                     } else {
                       _controller.nextPage(
                         duration: const Duration(milliseconds: 500),

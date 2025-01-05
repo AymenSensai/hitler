@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -27,6 +28,7 @@ class AppTextField extends StatelessWidget {
   final int maxLines;
   final Iterable<String>? autofillHints;
   final Function(String)? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
   const AppTextField({
     super.key,
     this.contentPadding,
@@ -47,6 +49,7 @@ class AppTextField extends StatelessWidget {
     this.autofillHints,
     this.onChanged,
     this.maxLines = 1,
+    this.inputFormatters,
     required this.validator,
     required this.controller,
     required this.hintText,
@@ -60,8 +63,11 @@ class AppTextField extends StatelessWidget {
       textInputAction: textInputAction,
       autofillHints: autofillHints,
       onChanged: onChanged,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
         isDense: true,
+        fillColor: backgroundColor ?? ColorsManager.white,
+        filled: true,
         errorStyle: TextStyles.font10RedRegular,
         contentPadding: contentPadding ??
             EdgeInsets.symmetric(horizontal: 20.w, vertical: 18.h),
@@ -76,7 +82,7 @@ class AppTextField extends StatelessWidget {
         enabledBorder: enabledBorder ??
             OutlineInputBorder(
               borderSide: const BorderSide(
-                color: ColorsManager.lightGrey,
+                color: ColorsManager.white,
                 width: 1,
               ),
               borderRadius: BorderRadius.circular(8.0),

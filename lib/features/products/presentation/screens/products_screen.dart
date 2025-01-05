@@ -15,21 +15,22 @@ class ProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: TopAppBar(
-          title: 'Products',
-          actions: [
-            IconButton(
-              onPressed: () => context.pushNamed(Routes.addProduct),
-              icon: Icon(Icons.add_rounded),
-            ),
-          ],
-        ),
-        body: CustomRefreshIndicator(
-          onRefresh: () => _refreshData(context),
-          child: ConnectivityWrapper(
-            child: ProductsBlocConsumer(),
+      appBar: TopAppBar(
+        title: 'Products',
+        actions: [
+          IconButton(
+            onPressed: () => context.pushNamed(Routes.addProduct),
+            icon: Icon(Icons.add_rounded),
           ),
-        ));
+        ],
+      ),
+      body: CustomRefreshIndicator(
+        onRefresh: () => _refreshData(context),
+        child: ConnectivityWrapper(
+          child: ProductsBlocConsumer(),
+        ),
+      ),
+    );
   }
 
   Future<void> _refreshData(BuildContext context) async {

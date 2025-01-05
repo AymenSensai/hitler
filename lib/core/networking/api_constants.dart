@@ -1,6 +1,7 @@
 class ApiConstants {
   // Base url
-  static const String apiBaseUrl = "http://10.0.2.2:8000/";
+  static const String apiBaseUrl =
+      "https://stocksbackend-production.up.railway.app/";
 
   // Auth end points.
   static const String login = "login";
@@ -11,6 +12,10 @@ class ApiConstants {
 
   static const String products = "products";
   static const String categories = "categories";
+  static const String contacts = "contacts";
+  static const String orders = "orders";
+
+  static const String dashboard = "dashboard-data";
 }
 
 class ApiErrors {

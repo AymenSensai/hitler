@@ -22,5 +22,7 @@ abstract class Assets {
 
   static const String google = 'assets/svgs/google_logo.svg';
 
+  static const String search = 'assets/svgs/search.svg';
+
   Assets._();
 }

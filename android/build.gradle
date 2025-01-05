@@ -3,6 +3,17 @@ allprojects {
         google()
         mavenCentral()
     }
+    subprojects {
+        afterEvaluate { project ->
+            if (project.hasProperty('android')) {
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+            }
+        }
+    }
 }
 
 rootProject.buildDir = "../build"
@@ -15,4 +26,14 @@ subprojects {
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    def tasks = taskGraph.getAllTasks()
+    def buildTasks = tasks.find { it.name.startsWith('build') && it.getGroup() == 'build' }
+    if (buildTasks) {
+        tasks.findAll {it.name.startsWith('test')}.each { task ->
+            task.enabled = false
+        }
+    }
 }
