@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stocks_app/features/products/domain/entities/category_entity.dart';
 import 'package:stocks_app/features/products/domain/entities/product_entity.dart';
 import 'package:stocks_app/features/products/presentation/controllers/products_state.dart';
 
@@ -11,6 +12,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   final ProductsRepo _productsRepo;
   final List<String> categories = [];
+  final List<CategoryEntity> categoriesEntities = [];
   final List<ProductEntity> products = [];
 
   Future<void> getProducts() async {
@@ -73,6 +75,9 @@ class ProductsCubit extends Cubit<ProductsState> {
       success: (response) {
         categories.clear();
         categories.addAll(response.map((category) => category.name));
+        categoriesEntities.clear();
+        categoriesEntities.addAll(response);
+        emit(GetCategoriesSuccess());
       },
       failure: (error) {},
     );

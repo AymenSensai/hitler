@@ -14,7 +14,7 @@ class _HistoryApiService implements HistoryApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://stocksbackend-production.up.railway.app/';
+    baseUrl ??= 'http://10.0.2.2:8000/';
   }
 
   final Dio _dio;

@@ -50,9 +50,7 @@ class _AppHomeState extends State<AppHome> {
         );
       case 1:
         return BlocProvider.value(
-          value: AppRouter.productsCubit
-            ..getProducts()
-            ..getCategories(),
+          value: AppRouter.productsCubit..getProducts(),
           child: const ProductsScreen(),
         );
       case 2:

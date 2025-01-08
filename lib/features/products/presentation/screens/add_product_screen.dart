@@ -93,7 +93,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   sku: _skuController.text,
                   stock: int.parse(_stockController.text),
                   reorderPoint: int.parse(_reorderPointController.text),
-                  category: _categoryController.text,
+                  category: context
+                      .read<ProductsCubit>()
+                      .categoriesEntities
+                      .firstWhere(
+                        (element) => element.name == _categoryController.text,
+                      )
+                      .id
+                      .toString(),
                   sellingPrice: _sellingPriceController.text,
                   costPrice: _costPriceController.text,
                   image: _productImage!,
@@ -107,7 +114,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   sku: _skuController.text,
                   stock: int.parse(_stockController.text),
                   reorderPoint: int.parse(_reorderPointController.text),
-                  category: _categoryController.text,
+                  category: context
+                      .read<ProductsCubit>()
+                      .categoriesEntities
+                      .firstWhere(
+                        (element) => element.name == _categoryController.text,
+                      )
+                      .id
+                      .toString(),
                   sellingPrice: _sellingPriceController.text,
                   costPrice: _costPriceController.text,
                   image: _productImage!,

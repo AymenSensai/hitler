@@ -86,7 +86,7 @@ class AppRouter {
       case Routes.addProduct:
         return MaterialPageRoute(
           builder: (_) => BlocProvider.value(
-            value: productsCubit,
+            value: productsCubit..getCategories(),
             child: AddProductScreen(
               product: arguments as ProductEntity?,
             ),

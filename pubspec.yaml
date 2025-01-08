@@ -74,6 +74,11 @@ dev_dependencies:
   # To change app's launcher icon.
   flutter_launcher_icons: ^0.14.2
 
+  http_mock_adapter: ^0.6.1
+  mockito: ^5.4.5
+  bloc_test: ^9.1.7
+  mocktail: ^1.0.4
+
 flutter_launcher_icons:
   android: true
   ios: true
