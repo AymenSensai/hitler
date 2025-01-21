@@ -97,8 +97,8 @@ class ProductsCubit extends Cubit<ProductsState> {
     final response = await _productsRepo.deleteProduct(id);
     response.when(
       success: (response) {
-        getProducts();
         emit(DeleteProductSuccess());
+        getProducts();
       },
       failure: (error) {
         emit(DeleteProductError(error: error));

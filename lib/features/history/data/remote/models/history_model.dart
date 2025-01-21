@@ -45,9 +45,9 @@ class ProductWithPivotModel {
   final int id;
   final String name;
   final String sku;
-  final String stock;
+  final int stock;
   @JsonKey(name: 'reorder_point')
-  final String reorderPoint;
+  final int reorderPoint;
   @JsonKey(name: 'category_id')
   final int categoryId;
   @JsonKey(name: 'selling_price')
@@ -82,8 +82,8 @@ class ProductWithPivotModel {
         id: id,
         name: name,
         sku: sku,
-        stock: stock,
-        reorderPoint: reorderPoint,
+        stock: stock.toString(),
+        reorderPoint: reorderPoint.toString(),
         categoryId: categoryId,
         sellingPrice: sellingPrice,
         costPrice: costPrice,

@@ -80,7 +80,10 @@ class _StockScreenState extends State<StockScreen> {
                 showAnimatedLoading(context);
               case UpdateStockSuccess():
                 context.pop();
-                context.pop();
+                context.pushNamedAndRemoveUntil(
+                  Routes.appHome,
+                  predicate: (route) => false,
+                );
               case UpdateStockError():
                 context.pop();
                 errorSnackbar(context, state.error);

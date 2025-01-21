@@ -16,18 +16,25 @@ class AddProductBlocListener extends StatelessWidget {
       listenWhen: (previous, current) =>
           current is AddProductLoading ||
           current is AddProductSuccess ||
-          current is AddProductError,
+          current is AddProductError ||
+          current is DeleteProductLoading ||
+          current is DeleteProductSuccess ||
+          current is DeleteProductError,
       listener: (context, state) {
         switch (state) {
           case AddProductLoading():
           case UpdateProductLoading():
+          case DeleteProductLoading():
             showAnimatedLoading(context);
           case AddProductSuccess():
           case UpdateProductSuccess():
+          case DeleteProductSuccess():
             _setupSuccess(context);
           case AddProductError():
             _setupError(context, state.error);
           case UpdateProductError():
+            _setupError(context, state.error);
+          case DeleteProductError():
             _setupError(context, state.error);
           default:
             const SizedBox.shrink();

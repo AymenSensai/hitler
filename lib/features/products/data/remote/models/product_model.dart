@@ -12,9 +12,9 @@ class ProductModel {
   final String name;
   final String sku;
   @JsonKey(name: 'stock')
-  final String stock;
+  final int stock;
   @JsonKey(name: 'reorder_point')
-  final String reorderPoint;
+  final int reorderPoint;
   @JsonKey(name: 'selling_price')
   final String sellingPrice;
   @JsonKey(name: 'cost_price')
@@ -45,8 +45,8 @@ class ProductModel {
         id: id,
         name: name,
         sku: sku,
-        stock: stock,
-        reorderPoint: reorderPoint,
+        stock: stock.toString(),
+        reorderPoint: reorderPoint.toString(),
         sellingPrice: sellingPrice,
         costPrice: costPrice,
         image: image,
@@ -58,8 +58,8 @@ class ProductModel {
         id: product.id,
         name: product.name,
         sku: product.sku,
-        stock: product.stock,
-        reorderPoint: product.reorderPoint,
+        stock: int.parse(product.stock),
+        reorderPoint: int.parse(product.reorderPoint),
         sellingPrice: product.sellingPrice,
         costPrice: product.costPrice,
         image: product.image,

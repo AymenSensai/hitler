@@ -14,7 +14,7 @@ class _StockApiService implements StockApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://10.0.2.2:8000/';
+    baseUrl ??= 'https://stocksbackend-production.up.railway.app/';
   }
 
   final Dio _dio;

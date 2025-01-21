@@ -94,7 +94,7 @@ class HomeScreen extends StatelessWidget {
                         ),
                         verticalSpace(4),
                         Text(
-                          dashboard.earnings.toString(),
+                          double.parse(dashboard.earnings).abs().toString(),
                           style: TextStyles.font16WhiteMedium,
                         ),
                       ],
